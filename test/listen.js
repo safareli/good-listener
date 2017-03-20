@@ -1,4 +1,5 @@
 var listen = require('../src/listen');
+var is = require('../src/is');
 var simulant = require('simulant');
 
 describe('good-listener', function() {
@@ -6,6 +7,7 @@ describe('good-listener', function() {
         global.node = document.createElement('div');
         global.node.setAttribute('id', 'foo');
         global.node.setAttribute('class', 'foo');
+        global.node.innerHTML = '<div id="text-node-test"> <button></button></div><div id="comment-node-test"><!-- --><button></button></div>';
         document.body.appendChild(global.node);
     });
 
@@ -78,6 +80,20 @@ describe('good-listener', function() {
 
             listener.destroy();
             assert.ok(global.spy.calledOnce);
+        });
+
+        it('doesn\'t listen to non node objects', function() {
+            [
+                document.querySelector('#text-node-test').childNodes,
+                document.querySelector('#comment-node-test').childNodes,
+            ].forEach(function(nodeList) {
+                var addSpy = sinon.spy(nodeList[0], 'addEventListener');
+                var removeSyp = sinon.spy(nodeList[0], 'removeEventListener');
+                var listener = listen(nodeList, 'click', function() {});
+                listener.destroy();
+                assert.equal(addSpy.callCount, 0);
+                assert.equal(removeSyp.callCount, 0);
+            })
         });
     });
 

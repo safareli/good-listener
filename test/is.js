@@ -1,10 +1,10 @@
 var is = require('../src/is');
-
 describe('is', function() {
     before(function() {
         global.node = document.createElement('div');
         global.node.setAttribute('id', 'foo');
         global.node.setAttribute('class', 'foo');
+        global.node.innerHTML = '<div id="text-node-test"> <button></button></div><div id="comment-node-test"><!-- --><button></button></div>';
         document.body.appendChild(global.node);
     });
 
@@ -41,6 +41,8 @@ describe('is', function() {
     describe('is.nodeList', function() {
         it('should be considered as nodeList', function() {
             assert.ok(is.nodeList(document.getElementsByTagName('div')));
+            assert.ok(is.nodeList(document.getElementById('text-node-test').childNodes));
+            assert.ok(is.nodeList(document.getElementById('comment-node-test').childNodes));
             assert.ok(is.nodeList(document.getElementsByClassName('foo')));
             assert.ok(is.nodeList(document.querySelectorAll('.foo')));
         });

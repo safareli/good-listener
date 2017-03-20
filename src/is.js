@@ -22,7 +22,6 @@ exports.nodeList = function(value) {
     return value !== undefined
         && (type === '[object NodeList]' || type === '[object HTMLCollection]')
         && ('length' in value)
-        && (value.length === 0 || exports.node(value[0]));
 };
 
 /**
